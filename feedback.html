@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Feedback Form</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 300px;
+      padding: 10px;
+    }
+
+    input[type="submit"] {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    #result.success {
+      color: green;
+    }
+
+    #result.error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>User Feedback Form</h1>
+<form id="feedbackForm">
+    <label for="nameInput">Name:</label>
+    <br>
+    <input type="text" id="nameInput" required>
+    <br><br>
+
+    <label for="emailInput">Email:</label>
+    <br>
+    <input type="text" id="emailInput" required>
+    <br><br>
+
+    <label for="messageTextarea">Message:</label>
+    <br>
+    <textarea id="messageTextarea" rows="5" required></textarea>
+    <br><br>
+
+    <input type="submit" value="Submit">
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    var form = document.getElementById("feedbackForm");
+    var result = document.getElementById("result");
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      var name = document.getElementById("nameInput").value;
+      var email = document.getElementById("emailInput").value;
+      var message = document.getElementById("messageTextarea").value;
+
+      var feedbackData = {
+        name: name,
+        email: email,
+        message: message
+      };
+
+      try {
+        localStorage.setItem("feedback", JSON.stringify(feedbackData));
+        result.textContent = "Feedback submitted successfully!";
+        result.className = "success";
+
+        // Send the feedback data to the developer's email address
+        var email = "abc651747@gmail.com";
+        var subject = "New feedback from user";
+        var message = "Hi developer,\n\nI've submitted some feedback from your user feedback form.\n\nName: " + name + "\nEmail: " + email + "\nMessage: " + message;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "mailto:" + email, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify({
+          subject: subject,
+          body: message
+        }));
+      } catch (error) {
+        result.textContent = "Error submitting feedback!";
+        result.className = "error";
+      }
+    });
+  </script>
+
+  <button onclick="downloadFeedbackData()">Download Feedback Data</button>
+</body>
+</html>
